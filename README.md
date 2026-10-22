@@ -1,91 +1,135 @@
 # 红警2 共和国之辉 · Android 轻量版
 
-> **Skirmish-only / 仅遭遇战**  
-> 一个把《红色警戒2》+《共和国之辉》MOD 的数据，用 TypeScript/WebGL 重写引擎跑在 Android WebView 里的轻量移植项目。
+> **Skirmish-only / 仅遭遇战**
+>
+> 不是模拟器，也不是 Winlator。就是把原版游戏的数据喂给一套 TypeScript/WebGL 重写引擎，再套个 Android WebView 壳，让它在手机上能打遭遇战。
+
+> **群友版一句话：**
+> 能玩，但只有遭遇战；完整包和素材别找我要，版权问题，仓库只放代码。
 
 ---
 
-## 项目状态
+## 太长不看
 
-- **已归档 / 停止开发**
-- 稳定版只保留：**遭遇战（Skirmish）**
-- 原版战役、战役影片、背景音乐均不包含
-- 源码公开，**禁止商业使用**
-- 仅在作者自己的手机上做过完整真机验证
+| 问题 | 答案 |
+|---|---|
+| 能不能在手机上玩？ | 能，只保证和作者手机环境相似的机器 |
+| 有没有战役？ | 没有，已放弃 |
+| 有没有音乐/影片？ | 没有，安装包数据本身是空占位 |
+| 是不是 Wine / Box64？ | 不是，原生 WebView + 重写引擎 |
+| 仓库有没有 APK/素材？ | 没有，只有代码和构建脚本 |
+| 能不能商用？ | 不能，非商业许可 |
+| 出问题谁负责？ | 自己承担，作者不负责 |
 
 ---
 
 ## 为什么仓库不公开完整游戏包 / APK
 
-先把最重要的话放在开头：
+先说清楚：
 
-> **本仓库只公开代码、构建脚本和说明文档，不公开包含原版游戏素材的完整 APK。**
+> **这个仓库只公开代码、构建脚本和文档，不公开包含原版素材的完整 APK。**
 
-原因有三个：
+原因不复杂：
 
-1. **版权**
-   - `ra2.mix`、`language.mix`、`general.csf`、地图、SHP/VXL 等素材版权归 **EA / Westwood** 所有；
-   - 《共和国之辉》MOD 的素材版权归 MOD 原作者；
-   - 我没有权利把这些素材以“开源”的名义重新分发。
+1. **版权不在我手里**
+   - `ra2.mix`、`language.mix`、`general.csf`、地图、SHP/VXL 都是 EA / Westwood 的东西；
+   - 共和国之辉的素材归 MOD 原作者；
+   - 我没资格把这些东西打包成“开源项目”往外发。
 
-2. **仓库体积**
-   - 完整 APK 约 **450 MB**，其中绝大部分是原版素材；
-   - 不适合直接塞进 Git 仓库，也不适合让每个 clone 都下载一遍；
-   - `.gitignore` 已经排除了 APK、MIX、地图、CSF 等文件。
+2. **完整包太大**
+   - APK 约 450 MB，基本都是原版素材；
+   - 不适合塞 Git，也不适合让每个 clone 都拖一遍；
+   - `.gitignore` 已经排除了 APK、MIX、地图、CSF。
 
-3. **安全与责任**
-   - 不想让“带完整素材的 APK”被二次打包、挂广告、拿去售卖；
-   - 也不想因为素材传播问题给使用者和上游项目带来麻烦。
+3. **不想惹麻烦**
+   - 带素材的 APK 很容易被人二次打包、挂广告、拿去卖；
+   - 对使用者和上游项目都不是好事。
 
-所以仓库提供的是：
+所以仓库给的是：
 
-- ✅ 重写引擎的 TypeScript 源码
-- ✅ Android WebView 壳、本地 HTTP 服务、构建脚本
-- ✅ 汉化层、兼容性修复、开发文档
-- ✅ 如何从**你自己合法拥有的游戏**中提取资源的说明
+- 重写引擎的 TypeScript 源码；
+- Android WebView 壳、本地 HTTP 服务、构建脚本；
+- 汉化、兼容性修复、开发文档；
+- 从**你自己合法拥有的游戏**里提取资源的方法。
 
-你需要自己拥有《红色警戒2》和《共和国之辉》，然后按文档构建自己的个人 APK。
+游戏自己准备，APK 自己构建。就这样。
 
 ---
 
-## 这是什么
+## 这玩意到底是什么
 
-这不是 Wine、Box64、Winlator 之类的 Windows 容器，也不是把原版 `game.exe` 直接跑在 Android 上。
+一句话：**原版数据 + 重写引擎 + WebView 壳。**
 
-它的做法是：
+不是把 `game.exe` 跑在 Android 上，也不是云游戏。具体流程：
 
-1. 从你合法拥有的《红警2》+《共和国之辉》安装包中提取原版数据：
-   - `ra2.mix`、`language.mix`、`multi.mix`、`sidec01/02.mix` 等
+1. 从你自己的《红警2》+《共和国之辉》里提取：
+   - `ra2.mix`、`language.mix`、`multi.mix`、`sidec01/02.mix`
    - `rules.ini`、`art.ini`
-   - `general.csf` 中文文本
+   - `general.csf`
    - 地图、SHP、VXL、调色板
-2. 用一套 **TypeScript + WebGL 的重写引擎**读取这些数据；
-3. 用 Android WebView 运行这套 Web 引擎；
-4. 用本地 HTTP 服务和 OPFS 解决 WebView 的资源加载/持久化问题。
+2. 用 TypeScript/WebGL 引擎读取这些数据；
+3. 用 Android WebView 跑这套 Web 引擎；
+4. 用本地 HTTP + OPFS 解决 WebView 的资源/持久化问题。
 
-所以它是一个：
+```text
+APK
+├─ assets/web/       React + TypeScript 引擎
+└─ assets/gameres/   原版 MIX / INI / CSF / SHP / VXL
+        │
+        ▼
+Android WebView（Chromium / V8）
+├─ TypeScript 游戏逻辑
+├─ WebGL / Three.js 渲染
+├─ Web Worker / WASM 解码
+└─ OPFS 资源缓存
+        ▲
+        │ fetch
+AssetServer（纯 Java，本地 HTTP）
+http://127.0.0.1:8787
+```
 
-> **复用原版游戏数据、重写游戏引擎的轻量级移植版**，不是原版 EXE 的模拟器。
+它不是 x86 模拟器：V8 直接跑 JS，WebGL 直接画，ARM 上不需要指令翻译。
+
+---
+
+## 为什么是本地 HTTP + OPFS
+
+因为 WebView 的 `file://` 很不讲道理：
+
+- opaque origin，OPFS / localStorage / SharedArrayBuffer 都不稳；
+- Worker、fetch、模块加载容易被 CORS 卡；
+- 引擎需要 Cross-Origin Isolation 才能用 `SharedArrayBuffer`。
+
+所以壳里起一个只监听 `127.0.0.1` 的 HTTP 服务：
+
+- 固定端口 **8787**；
+- 带 COOP/COEP 头；
+- `/` 返回 `assets/web`；
+- `/gameres/*` 返回 `assets/gameres`。
+
+这个端口不能随便改。改了 origin 就变，OPFS 里那 444 MB 资源直接作废，得重新 seed。
+
+首次启动会把资源写进 OPFS，大约 **444 MB**，所以慢是正常的；后面启动直接复用。
 
 ---
 
 ## 开发初衷
 
-小时候在电脑上玩《红色警戒2》和《共和国之辉》，现在手机性能早就够了，但想在手机上随时开一局遭遇战，却只能找到：
+小时候在电脑上打红警、打共和国之辉，现在手机性能早就溢出了，想随时开一局遭遇战，结果发现：
 
-- 云游戏（要网络、要会员、延迟高）
-- Winlator/Box64（重、烫、操作别扭）
-- 各种整合包（体积大、兼容性玄学）
+- 云游戏要网络、要会员，延迟还高；
+- Winlator/Box64 又重又烫，操作也别扭；
+- 各种整合包体积大，兼容性看命。
 
-于是就有了这个项目：
+行吧，那就自己搞一个。
 
-> **在手机上方便地回味童年，能随时打一局遭遇战就够了。**
+> **能在手机上方便地回味童年，随时打一局遭遇战，就够了。**
 
-没有打算做完整 remaster，也没有打算还原原版战役。它就是一个“能装在手机上、点开就能玩遭遇战”的轻量版本。
+没打算做完整 remaster，也没打算还原战役。它就是一个能装进手机、点开就能玩的轻量版。
 
 ---
 
-## 功能
+## 能玩什么
 
 | 功能 | 状态 |
 |---|---|
@@ -98,190 +142,169 @@
 | 建造菜单/放置建筑 | ✅ |
 | 触摸操作 | ✅ |
 | 采矿/战斗/基础 AI | ✅ |
-| 读取存档入口 | ✅（未充分验证） |
-| 局域网联机入口 | ✅（未充分验证） |
+| 读取存档 | ✅ 入口有，未充分验证 |
+| 局域网联机 | ✅ 入口有，未充分验证 |
 | 原版战役 | ❌ |
-| 战役影片 | ❌（数据源只有 5 字节占位） |
-| 背景音乐 | ❌（`theme.mix` 是零占位） |
-| 完整后期平衡/全部地图 | ⚠️ 未逐项验证 |
+| 战役影片 | ❌ 数据源只有 5 字节占位 |
+| 背景音乐 | ❌ `theme.mix` 是零占位 |
+| 全部地图/后期平衡 | ⚠️ 没逐项回归 |
+
+**它只有遭遇战。** 战役试过，没做完，放弃了。
 
 ---
 
 ## 最终效果
 
-以下截图都是作者手机上实际运行的画面，不是渲染图。
+都是作者手机上实际跑的，不是渲染图。
 
 ### 主菜单
 
-![手机主菜单：遭遇战 / 读取存档 / 局域网联机 / 選項](docs/images/main-menu.jpg)
+![手机主菜单：遭遇战 / 读取存档 / 局域网联机 / 选项](docs/images/main-menu.jpg)
 
-- 完整中文主菜单；
-- 只剩遭遇战、读取存档、局域网联机、选项；
+- 全中文；
+- 只有遭遇战、读取存档、局域网联机、选项；
 - 没有战役按钮；
-- 主菜单影片是转码后的 WebM。
+- 主菜单影片是 Bink 转出来的 WebM。
 
 ### 遭遇战
 
 ![手机遭遇战：盟军基地、中文 HUD、中国 MOD 单位](docs/images/gameplay.jpg)
 
 - 手机横屏全屏；
-- 中文 HUD/建造菜单；
+- 中文 HUD / 建造菜单；
 - 中国 MOD 单位与建筑；
 - 触摸选中、部署 MCV、建造、采矿、战斗；
-- 画面来自 1272×2800 手机屏幕的实际截屏。
+- 截图来自 1272×2800 的真机屏幕。
 
-### 它不是什么“模拟器画面”
-
-游戏逻辑运行在 WebView 里的 TypeScript 引擎中，通过 WebGL 绘制；不是 Wine/Box64 窗口，也不是远程云游戏。
-
----
-
-## 不包含什么
-
-这个项目**不是**：
-
-- 原版《红色警戒2》的完整复刻；
-- 原版战役模拟器；
-- Wine/Box64/Winlator 容器；
-- 包含原版游戏素材的官方发行版；
-- 可以商用的产品。
-
-它**只有遭遇战**。战役模式曾经做过实验，但因为缺少完整的 Team/Script 运行时、战役触发器覆盖不足、真机黑屏/性能问题，已经放弃。
+再说一遍：这不是 Wine/Box64 窗口，也不是云游戏画面。
 
 ---
 
 ## 使用方式
 
-### 方式一：自己构建 APK（推荐，也是仓库唯一公开方式）
+### 方式一：自己构建（推荐，也是仓库唯一公开方式）
 
-仓库只包含**代码**，不包含原版游戏资源，也不发布带素材的 APK。
+仓库只有代码，没有原版资源，也没有带素材的 APK。
 
-你需要自己拥有：
+你需要自己准备：
 
 - 《红色警戒2》原版；
 - 《共和国之辉》MOD；
 - 对应的安装包/解包目录。
 
-准备资源后，按下方“从源码构建”的步骤生成：
+然后按下面“从源码构建”生成：
 
 ```text
 android/ra2ghg.apk
 ```
 
-这是最推荐的方式：素材来自你自己的游戏，风险最低，也符合本项目的非商业许可。
+素材来自你自己的游戏，风险最低，也符合这个项目的非商业许可。
 
-### 方式二：如果你拿到了别人构建的个人测试 APK
+### 方式二：别人构建的个人测试 APK
 
-> 注意：原版游戏素材版权归 EA/Westwood 所有。  
-> **不要公开分发包含 `ra2.mix`、`language.mix` 等原版素材的 APK。**  
-> 个人测试 APK 只建议用于自己拥有的游戏。
+> 原版素材版权归 EA/Westwood。  
+> **不要公开分发带 `ra2.mix`、`language.mix` 的 APK。**  
+> 个人测试包只建议给自己拥有的游戏用。
 
-1. 准备 Android 手机：
-   - Android 8.0+（minSdk 26）
-   - arm64-v8a
-   - 建议 4 GB 以上内存
-   - 至少 2 GB 可用空间
-   - 较新的 Android System WebView（Chromium 内核）
-2. 安装 APK：
-   - 允许“安装未知来源应用”；
-   - 不需要 root。
-3. 首次启动：
-   - 应用会把约 **444 MB** 的游戏资源写入 WebView 的 OPFS；
-   - 第一次启动/更新后第一次启动会比较慢，请保持前台、亮屏；
-   - 后续启动会复用同一份数据。
-4. 进入主菜单：
-   - **遭遇战**
-   - **读取存档**
-   - **局域网联机**
-   - **選項**
-5. 遭遇战：
-   - 选中国；
-   - 选地图、敌人、颜色、难度；
-   - 开始游戏；
-   - 触摸选中 MCV，部署建造场，然后正常建造。
+手机要求：
+
+- Android 8.0+（minSdk 26）；
+- arm64-v8a；
+- 建议 4 GB 以上内存；
+- 至少 2 GB 可用空间；
+- 较新的 Android System WebView。
+
+安装后第一次启动：
+
+- 会往 WebView 的 OPFS 写约 444 MB；
+- 慢是正常的，保持前台、亮屏；
+- 后面启动复用同一份数据。
+
+进主菜单：
+
+- 遭遇战；
+- 读取存档；
+- 局域网联机；
+- 选项。
+
+遭遇战里选中国、选地图/敌人/颜色/难度，开局触摸选中 MCV，部署建造场，然后正常建造。
 
 ---
 
-## 环境要求与兼容性
+## 兼容性：别指望所有手机都完美
 
-### 作者真机验证环境
+> **这个 App 大概率只在和作者手机环境相似的机器上才能完美运行。**
 
-- 手机：一加 Ace 5 至尊版（`PLC110`）
-- 系统：Android 16 / API 36
-- CPU：arm64-v8a，MediaTek MT6991
-- 屏幕：1272×2800，560 dpi
-- WebView：154
-- 运行内存：足够（建议 12 GB 或以上）
-- 存储：约 50 GB 可用
+作者真机：
 
-### 兼容性说明
+- 一加 Ace 5 至尊版（`PLC110`）
+- Android 16 / API 36
+- arm64-v8a，MediaTek MT6991
+- 1272×2800，560 dpi
+- WebView 154
+- 建议 12 GB 内存，约 50 GB 可用空间
 
-> **这个 App 大概率只在和作者手机环境配置相似的机器上才能完美运行。**
+为什么挑机器：
 
-原因：
-
-- 它依赖 Android System WebView 的 WebGL/Worker/OPFS 行为；
-- 不同厂商的 WebView 版本、GPU 驱动、屏幕比例、触摸映射都可能不同；
+- 依赖 Android System WebView 的 WebGL/Worker/OPFS；
+- 不同厂商 WebView、GPU 驱动、屏幕比例、触摸映射都可能不一样；
 - 固定 8787 端口、OPFS 首次 seeding、HUD 缩放都对环境敏感；
-- 作者没有在多机型上做系统测试。
+- 作者没做多机型系统测试。
 
-在其他手机上可能出现：
+其他手机可能：
 
 - 首帧黑屏/花屏；
-- WebGL 上下文创建失败；
+- WebGL 创建失败；
 - 触摸位置偏移；
 - 字体/UI 过大或过小；
 - 帧率低、发热、内存不足；
 - 首次 seeding 卡住。
 
-**能启动不代表能完美运行；请以你自己的真机测试为准。**
+能启动不代表能完美运行，以你自己真机为准。
 
 ---
 
-## 已知问题 / Bug 列表
+## 已知 Bug / 限制
 
-项目已归档，以下问题不承诺修复：
+项目已归档，下面这些不承诺修：
 
 1. **首次启动很慢**
-   - 需要把约 444 MB 资源写入 OPFS；
-   - 看起来像卡在“加载中”，请耐心等待。
+   - 要写约 444 MB 到 OPFS；
+   - 看起来像卡在“加载中”，等就完了。
 
-2. **更新 APK 后第一次启动也可能很慢**
-   - 新增资源需要补写 OPFS；
-   - 不要在这个时候清数据，否则会重新 seed。
+2. **更新后第一次启动也可能慢**
+   - 新资源要补写 OPFS；
+   - 这时候别清数据，不然重新 seed。
 
-3. **只支持遭遇战**
-   - 没有原版战役；
-   - 没有战役影片；
-   - 没有背景音乐。
+3. **只有遭遇战**
+   - 没战役、没影片、没音乐。
 
 4. **机型/WebView 兼容性**
    - 只在作者手机上完整验证；
-   - 其他机型可能黑屏、掉帧、触摸错位或直接无法进入游戏。
+   - 其他机器可能黑屏、掉帧、触摸错位、进不去。
 
 5. **地图/科技兼容**
-   - 部分地图可能引用不支持的科技类型；
-   - 部分 MOD 单位/建筑在后期可能表现异常；
-   - 没有逐张地图、逐个单位做完整回归。
+   - 部分地图引用了不支持的科技；
+   - 部分 MOD 单位/建筑后期表现异常；
+   - 没逐张地图、逐个单位回归。
 
-6. **LAN 入口未充分验证**
-   - 主菜单保留“局域网联机”；
-   - 没有做多机联调，不保证可用。
+6. **LAN 未充分验证**
+   - 入口保留，没多机联调，不保证能用。
 
 7. **读取存档未充分验证**
-   - 入口存在，但没有做完整存档/读档回归。
+   - 入口有，没做完整存档/读档回归。
 
-8. **触摸操作**
-   - 稳定版在作者手机上触摸正常；
-   - 不同屏幕比例/WebView 版本可能出现点不中、HUD 偏移。
+8. **触摸**
+   - 作者手机上正常；
+   - 不同屏幕比例/WebView 可能点不中、HUD 偏移。
 
 9. **固定端口 8787**
-   - 不能随便改端口；
-   - 改了会换 origin，OPFS 里的资源全部失效，需要重新 seed。
+   - 不能随便改；
+   - 改了 origin 变，OPFS 资源全失效，要重新 seed。
 
 10. **旧进程残留**
     - 更新/回滚后如果直接进旧游戏，不一定是 APK 逻辑；
-    - 先 `adb shell am force-stop com.dsh.ra2ghg`，确认进程退出再启动。
+    - 先 `adb shell am force-stop com.dsh.ra2ghg`，确认进程没了再启动。
 
 11. **地图名/版本号/ID 仍是英文**
     - UI 已汉化；
@@ -290,46 +313,35 @@ android/ra2ghg.apk
 
 12. **APK 体积大**
     - 约 450 MB；
-    - 因为包含原版 MIX 资源；
+    - 因为包含原版 MIX；
     - 不适合低存储设备。
 
-13. **源码里的战役代码是休眠的**
-    - `src/game/campaign/*` 仍然存在；
-    - 稳定版通过编译开关和地图过滤关闭；
-    - 不要在稳定版里重新启用。
+13. **战役代码是休眠的**
+    - `src/game/campaign/*` 还在；
+    - 稳定版通过编译开关和地图过滤关掉了；
+    - 别在稳定版里重新启用。
 
 ---
 
-## 技术原理（简述）
+## 群友版 Q&A
 
-```text
-APK
-├─ assets/web/       React + TypeScript 引擎
-└─ assets/gameres/   原版 MIX/INI/CSF/SHP/VXL
-        │
-        ▼
-Android WebView（Chromium/V8）
-├─ TypeScript 游戏逻辑
-├─ WebGL / Three.js 渲染
-├─ Web Worker / WASM 解码
-└─ OPFS 资源缓存
-        ▲
-        │ fetch
-AssetServer（纯 Java，本地 HTTP）
-http://127.0.0.1:8787
-```
+**Q：为什么没战役？**  
+A：引擎没补完，不是藏私；Team/Script、触发器、目标、EVA 都差得远，真机还黑屏，收益太低，砍了。
 
-关键点：
+**Q：为什么没音乐？**  
+A：安装包里的 `theme.mix` 是零占位，不是我不加，是数据本身没有。
 
-- **不是 x86 模拟器**：不执行原版 `game.exe`；
-- **不是 Wine/Box64**：没有 Windows 兼容层；
-- **WebView 是运行时**：V8 JIT 把 JS 编译成 ARM 机器码；
-- **本地 HTTP 服务**：解决 `file://` 的 origin、OPFS、SharedArrayBuffer、CORS 问题；
-- **固定端口 8787**：保证 OPFS origin 稳定；
-- **OPFS seeding**：首次启动把 APK 内资源复制到 WebView 私有文件系统；
-- **资源解析**：MIX 归档、INI 规则、CSF 文本、SHP 精灵、VXL 体素、地图 INI。
+**Q：为什么没影片？**  
+A：`movies01/02.mix` 只有 5 字节，同样没数据。
 
-更详细的移植/构建/调试说明见仓库的 `docs/` 或交接文档。
+**Q：为什么我的手机黑屏？**  
+A：WebView/GPU/屏幕比例都可能背锅；这玩意只保证作者手机。
+
+**Q：能不能商用？**  
+A：不能。代码是非商业许可，素材也不是我的。
+
+**Q：为什么仓库没有 APK？**  
+A：版权 + 体积 + 不想被拿去卖，见开头。
 
 ---
 
@@ -337,18 +349,16 @@ http://127.0.0.1:8787
 
 ### 依赖
 
-- Windows（当前构建脚本是 PowerShell）
+- Windows（当前脚本是 PowerShell）
 - JDK 17
-- Android SDK：
-  - build-tools（含 aapt2、d8、zipalign、apksigner）
-  - platform android-36
-- Bun（构建 Web）
+- Android SDK：build-tools、platform android-36
+- Bun
 - Python 3
-- 7-Zip（解包原版安装包）
+- 7-Zip（解原版安装包）
 
-### 1. 准备游戏资源
+### 1. 准备资源
 
-从你合法拥有的安装包中提取：
+从你合法拥有的安装包提取：
 
 ```text
 ra2.mix
@@ -373,19 +383,19 @@ manifest.json
 android/assets/gameres/
 ```
 
-另外把同一份 `general.csf` 复制到：
+`general.csf` 再复制一份到：
 
 ```text
 redalert2/public/general.csf
 ```
 
-因为 Vite 构建时会把它复制到 `dist/general.csf`；仓库出于版权原因没有提交这个文件。
+Vite 构建会把它复制到 `dist/general.csf`。仓库出于版权原因没有提交这个文件。
 
 注意：
 
 - 稳定版不要放 `.MAP` 战役地图；
 - `android/assets/gameres` 应该是 14 个文件、0 个 `.MAP`；
-- 不要把开发目录 `gameres-export/` 整体复制进去。
+- 不要把 `gameres-export/` 整个复制进去。
 
 ### 2. 构建 Web
 
@@ -427,17 +437,17 @@ adb shell am start -n com.dsh.ra2ghg/.MainActivity
 
 ### 构建注意事项
 
-- **不要用 `aapt2 -A assets`**：Windows 会写反斜杠路径，手机端会 404。
-- `pack_assets.py` 会用 Python `zipfile` 以 `/` 路径打包。
+- **不要用 `aapt2 -A assets`**：Windows 会写反斜杠路径，手机端直接 404。
+- `pack_assets.py` 用 Python `zipfile` 以 `/` 路径打包。
 - `.mix` 以 `ZIP_STORED` 存放，避免每次读取都解压。
 - 不要改端口 8787。
-- 不要删除签名 keystore，否则无法覆盖安装。
-- `build.ps1` 使用 `$PSScriptRoot`，通过 `ANDROID_SDK_ROOT` / `JAVA_HOME` 找工具链；不再依赖作者机器路径。
+- 不要删签名 keystore，不然不能覆盖安装。
+- `build.ps1` 用 `$PSScriptRoot`，通过 `ANDROID_SDK_ROOT` / `JAVA_HOME` 找工具链。
 - `RA2_KEYSTORE_PASS` 只用于本地自签名；正式分发请用自己的 keystore。
 
 ---
 
-## 目录结构（参考）
+## 目录结构
 
 ```text
 .
@@ -458,11 +468,11 @@ adb shell am start -n com.dsh.ra2ghg/.MainActivity
 └─ README.md
 ```
 
-如果你的仓库结构不同，以实际路径为准。
+仓库结构可能和实际略有差异，以实际为准。
 
 ---
 
-## 汉化说明
+## 汉化
 
 - 单位、建筑、任务文本来自官方中文 CSF；
 - 主菜单/设置/LAN 等硬编码英文由 `src/gui/i18n/zhUi.ts` 做 DOM 翻译；
@@ -473,42 +483,42 @@ adb shell am start -n com.dsh.ra2ghg/.MainActivity
 
 ## 为什么没有战役
 
-战役数据其实存在：
+战役数据其实在：
 
 - `mission.ini` 101 个 section；
 - 24 张主战役 + 2 张教学；
 - 1893 个触发器、1181 个 TeamTypes、1002 个 ScriptTypes、910 个 TaskForces。
 
-但现有重写引擎缺少：
+但重写引擎缺：
 
 - 完整 Team/Script 运行时；
 - 战役专用 trigger action/event；
 - AI 生产/AI triggers；
 - 任务目标、EVA、下一关、进度存档；
-- 大量地图特有的脚本逻辑。
+- 大量地图特有脚本。
 
-做过 PoC（能加载 TRN01/ALL01、显示简报、刷队、胜负、下一关），但离“24 关可通关”差很远，且真机有黑屏/性能问题，所以放弃。
+我做过 PoC：能加载 TRN01/ALL01、显示简报、刷队、判胜负、进下一关。但离“24 关可通关”差太远，真机还黑屏，所以砍了。
 
 ---
 
 ## 贡献
 
-项目已归档，但仍欢迎：
+项目归档了，但还欢迎：
 
 - Bug 报告；
 - 兼容性测试；
 - 代码整理/文档改进；
-- 不包含原版素材的 PR。
+- 不含原版素材的 PR。
 
-提 Issue 时请附：
+提 Issue 请附：
 
 - 手机型号、Android 版本；
 - WebView 版本；
 - 是否首次启动；
-- `adb logcat` 相关日志；
+- 相关 `adb logcat`；
 - 截图/录屏。
 
-**不要**在 PR/Issue 里上传：
+**不要**在 Issue/PR 里传：
 
 - `ra2.mix`、`language.mix` 等原版资源；
 - 含原版资源的 APK；
@@ -520,7 +530,7 @@ adb shell am start -n com.dsh.ra2ghg/.MainActivity
 
 ### 代码许可
 
-本项目**原创代码**采用：
+本项目**原创代码**使用：
 
 > **PolyForm Noncommercial License 1.0.0**
 
@@ -529,63 +539,44 @@ adb shell am start -n com.dsh.ra2ghg/.MainActivity
   - 售卖 APK/源码；
   - 付费下载/会员制；
   - 广告变现；
-  - 商业托管/云游戏服务；
+  - 商业托管/云游戏；
   - 捆绑销售；
   - 以本项目为基础提供商业服务。
-- 严格来说，这是 **source-available（源码公开）**，不是 OSI 定义的开源许可证。
+- 严格说这是 **source-available（源码公开）**，不是 OSI 定义的开源许可证。
+
+### 文档许可
+
+README、文档、截图采用：
+
+> **CC BY-NC-SA 4.0**
+
+### 原版素材
+
+- 《红色警戒2》《尤里的复仇》及相关素材版权归 **Electronic Arts / Westwood Studios**；
+- 《共和国之辉》MOD 版权归其原作者；
+- 本项目不包含、不授权、不分发原版素材；
+- 你需要自己合法拥有原版游戏并提取资源；
+- 不要把原版素材或含素材的 APK 上传到 GitHub。
 
 ### 上游代码
 
 本项目并非从零重写全部引擎：Web 引擎来自 Chrono Divide / RA2Web 系代码。
 
-- PolyForm 非商业条款仅适用于本项目作者新增的 Android 壳、适配层、汉化、构建脚本等原创部分；
-- 上游引擎/库代码仍遵循其原有许可证；
-- 如果上游许可证与本项目的非商业条款存在冲突，以上游许可证为准；
-- 无论上游许可证如何，**不得将整个组合作商业使用**；
+- PolyForm 非商业条款只适用于本项目新增的 Android 壳、适配层、汉化、构建脚本等原创部分；
+- 上游引擎/库仍遵循其原有许可证；
+- 如果上游许可证和本项目的非商业条款冲突，以上游许可证为准；
+- 无论上游许可证如何，**不得把整个组合作商业使用**；
 - 发布/再分发前请自行核对上游 LICENSE 和版权声明。
-
-### 文档许可
-
-README、文档、截图等采用：
-
-> **CC BY-NC-SA 4.0**
-
-### 原版游戏素材
-
-- 《红色警戒2》《尤里的复仇》及相关素材版权归 **Electronic Arts / Westwood Studios** 所有；
-- 《共和国之辉》MOD 版权归其原作者所有；
-- 本项目**不包含、不授权、不分发**原版游戏素材；
-- 你需要自己合法拥有原版游戏，并自行提取资源；
-- 不要把原版素材或含素材的 APK 上传到 GitHub。
-
-### 上游引擎
-
-本项目基于 Chrono Divide / RA2Web 系的重写引擎进行二次开发。  
-上游代码/素材遵循其原有许可证；发布/再分发前请自行核对上游 LICENSE 和版权声明。
 
 ### 免责声明
 
-本项目按 **“现状（AS IS）”** 提供，不提供任何明示或暗示的担保，包括但不限于：
+本项目按 **“现状（AS IS）”** 提供，不提供任何明示或暗示的担保，包括但不限于可用性、无错误、不侵权、适用于特定用途。
 
-- 可用性；
-- 无错误；
-- 不侵犯第三方权利；
-- 适用于特定用途。
-
-使用本项目造成的任何后果，包括但不限于：
-
-- 设备发热、耗电、卡顿、崩溃；
-- 数据丢失；
-- 存档损坏；
-- 账号/设备风险；
-- 法律风险；
-- 因使用原版素材产生的版权纠纷；
-
-由使用者自行承担。作者不承担任何直接或间接责任。
+使用本项目造成的任何后果，包括但不限于设备发热/耗电/卡顿/崩溃、数据丢失、存档损坏、账号/设备风险、法律风险、因使用原版素材产生的版权纠纷，由使用者自行承担。作者不承担任何直接或间接责任。
 
 **本项目与 Electronic Arts、Westwood Studios 没有任何关联，也未获得其授权或背书。**
 
-以上内容不构成法律建议；如涉及商业使用/再分发，请咨询专业律师。
+以上内容不构成法律建议；涉及商业使用/再分发请咨询专业律师。
 
 ---
 
@@ -603,14 +594,14 @@ README、文档、截图等采用：
 
 A lightweight, **skirmish-only** Android port of *Command & Conquer: Red Alert 2* + the *Glory of the Republic* mod.
 
-It does **not** emulate the original x86 executable. Instead, it reuses the original game data (MIX/INI/CSF/SHP/VXL/maps) with a TypeScript/WebGL engine running inside an Android WebView, served through a loopback HTTP server and cached in OPFS.
+It does **not** emulate the original x86 executable. It reuses the original game data (MIX/INI/CSF/SHP/VXL/maps) with a TypeScript/WebGL engine running inside an Android WebView, served through a loopback HTTP server and cached in OPFS.
 
-- ✅ Chinese UI, skirmish, China mod units, touch controls
-- ❌ No campaign, no music, no movies
-- ❌ Not a Wine/Box64/Winlator container
-- ⚠️ Tested only on the author's phone (OnePlus Ace 5 Ultimate, Android 16, WebView 154); other devices may have rendering/touch/performance issues
-- 🚫 **Non-commercial use only** (PolyForm Noncommercial 1.0.0)
-- ⚠️ No warranty; use at your own risk
-- 🎮 Original game assets are copyrighted by EA/Westwood; this repository does not grant any rights to them
+- Chinese UI, skirmish, China mod units, touch controls
+- No campaign, no music, no movies
+- Not a Wine/Box64/Winlator container
+- Tested only on the author's phone (OnePlus Ace 5 Ultimate, Android 16, WebView 154)
+- **Non-commercial use only** (PolyForm Noncommercial 1.0.0)
+- No warranty; use at your own risk
+- Original game assets are copyrighted by EA/Westwood; this repository does not grant any rights to them
 
-This is a fan project made for nostalgia: **just enough to play a skirmish on a phone**.
+Fan project made for nostalgia: just enough to play a skirmish on a phone.
