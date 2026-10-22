@@ -1,0 +1,45 @@
+# Dependencies / build output
+node_modules/
+dist/
+build/
+*.log
+*.tmp
+
+# Android build output
+android/build/
+android/*.apk
+android/*.idsig
+android/experimental/
+android/backups/
+android/assets/web/
+android/assets/gameres/
+
+# Original game data / extracted assets
+gameres-export/
+extracted/
+*.mix
+*.MIX
+*.csf
+*.CSF
+*.bik
+*.BIK
+*.shp
+*.SHP
+*.vxl
+*.VXL
+*.map
+*.MAP
+*.pkt
+*.PKT
+*.wav
+*.WAV
+*.webm
+
+# Playwright local profiles
+edge-profile*/
+playwright-profile*/
+
+# Local credentials / signing material
+*.keystore
+*.jks
+certs/
