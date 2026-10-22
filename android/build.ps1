@@ -3,8 +3,6 @@ $ErrorActionPreference = 'Continue'
 $app = $PSScriptRoot
 $sdk = $env:ANDROID_SDK_ROOT
 $jdk = $env:JAVA_HOME
-$bt  = Join-Path $sdk 'build-tools\android-16'
-$androidJar = Join-Path $sdk 'platforms\android-36\android.jar'
 $build = Join-Path $app 'build'
 $assets = Join-Path $app 'assets'
 $ksPass = $env:RA2_KEYSTORE_PASS
@@ -12,6 +10,9 @@ $ksPass = $env:RA2_KEYSTORE_PASS
 if (-not $sdk) { throw 'Please set ANDROID_SDK_ROOT to your Android SDK directory.' }
 if (-not $jdk) { throw 'Please set JAVA_HOME to a JDK 17 directory.' }
 if (-not $ksPass) { $ksPass = 'ra2ghg-local-dev' }
+
+$bt  = Join-Path $sdk 'build-tools\android-16'
+$androidJar = Join-Path $sdk 'platforms\android-36\android.jar'
 
 New-Item -ItemType Directory -Force -Path $build | Out-Null
 
