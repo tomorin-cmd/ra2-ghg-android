@@ -1,5 +1,7 @@
 # 红警2 共和国之辉 Android 轻量版
 
+[English](README_EN.md) | 简体中文
+
 > **Skirmish-only / 仅遭遇战**
 >
 >把《红色警戒2》和《共和国之辉》的数据交给一套 TypeScript/WebGL 引擎，在 Android WebView 里运行。
